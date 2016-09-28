@@ -7,6 +7,7 @@ class Orchestrator_api
   require 'orchestrator_api/error'
   require 'orchestrator_api/command'
   require 'orchestrator_api/jobs'
+  require 'orchestrator_api/job'
   require 'orchestrator_api/environments'
 
   attr_accessor :config, :token
@@ -17,7 +18,6 @@ class Orchestrator_api
     settings = Hash[settings.map { |k, v| [k.to_s, v] }]
 
     @config = { 'token_path'  => File.join(Dir.home, '.puppetlabs', 'token'),
-                'port'        => '8143',
                 'api_version' => 'v1'
     }.merge(settings)
 
@@ -27,11 +27,11 @@ class Orchestrator_api
       @token = File.read(@config['token_path'])
     end
 
-    if @config['server'].nil?
-      raise "Configuration error: 'server' must specify the server running the Orchestration services and cannot be empty"
+    if @config['service-url'].nil?
+      raise "Configuration error: 'service-url' must specify the server running the Orchestration services and cannot be empty"
     end
-    if @config['ca_certificate_path'].nil?
-      raise "Configuration error: 'ca_certificate_path' must specify a path to the CA certificate used for communications with the server and cannot be empty"
+    if @config['cacert'].nil?
+      raise "Configuration error: 'cacert' must specify a path to the CA certificate used for communications with the server and cannot be empty"
     end
   end
 
@@ -40,14 +40,14 @@ class Orchestrator_api
   end
 
   def make_uri(path)
-    URI.parse("https://#{config['server']}:#{config['port']}#{path}")
+    URI.parse("#{config['service-url']}#{path}")
   end
 
   def create_http(uri)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.ssl_version = :TLSv1
-    http.ca_file = config['ca_certificate_path']
+    http.ca_file = config['cacert']
     http.verify_mode = OpenSSL::SSL::VERIFY_PEER
     http
   end
@@ -95,6 +95,10 @@ class Orchestrator_api
 
   def jobs
     @jobs ||= Orchestrator_api::Jobs.new(self, url)
+  end
+
+  def new_job(options)
+    Orchestrator_api::Job.new(self, options)
   end
 
   def root

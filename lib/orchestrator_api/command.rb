@@ -5,9 +5,8 @@ class Orchestrator_api::Command
     @api_url_base = api_url_base
   end
 
-  def deploy(environment, options = {})
+  def deploy(options = {})
     raise ArgumentError, 'Must pass options as a hash' unless options.is_a? Hash
-    options['environment'] = environment
     @https.post("#{@api_url_base}/command/deploy", options)
   end
 
