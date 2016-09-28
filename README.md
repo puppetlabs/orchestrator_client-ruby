@@ -3,6 +3,10 @@
 A simple client for interacting with the Orchestration Services API in Puppet Enterprise
 [Puppet orchestration API](https://docs.puppet.com/pe/latest/api_index.html#puppet-orchestrator-api)
 
+## Compatibility
+
+Currently, this client supports the "V1" endpoints shipped as part of Puppet Enterprise 2016.2.
+
 ## Installation
 
 ```shell
