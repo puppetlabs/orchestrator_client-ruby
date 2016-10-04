@@ -17,8 +17,6 @@ class Orchestrator_api
     settings = Hash[settings.map { |k, v| [k.to_s, v] }]
 
     @config = { 'token_path'  => File.join(Dir.home, '.puppetlabs', 'token'),
-                'port'        => '8143',
-                'api_version' => 'v1'
     }.merge(settings)
 
     if @config['token']
@@ -27,33 +25,29 @@ class Orchestrator_api
       @token = File.read(@config['token_path'])
     end
 
-    if @config['server'].nil?
-      raise "Configuration error: 'server' must specify the server running the Orchestration services and cannot be empty"
+    if @config['service-url'].nil?
+      raise "Configuration error: 'service-url' must specify the server running the Orchestration services and cannot be empty"
     end
-    if @config['ca_certificate_path'].nil?
-      raise "Configuration error: 'ca_certificate_path' must specify a path to the CA certificate used for communications with the server and cannot be empty"
+    if @config['ca_cert'].nil?
+      raise "Configuration error: 'ca_cert' must specify a path to the CA certificate used for communications with the server and cannot be empty"
     end
   end
 
   def url
-    "/orchestrator/#{config['api_version']}"
-  end
-
-  def make_uri(path)
-    URI.parse("https://#{config['server']}:#{config['port']}#{path}")
+    config['service-url']
   end
 
   def create_http(uri)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     http.ssl_version = :TLSv1
-    http.ca_file = config['ca_certificate_path']
+    http.ca_file = config['ca_cert']
     http.verify_mode = OpenSSL::SSL::VERIFY_PEER
     http
   end
 
-  def get(endpoint)
-    uri = make_uri(endpoint)
+  def get(location)
+    uri = URI.parse(location)
     https = create_http(uri)
 
     req = Net::HTTP::Get.new(uri.request_uri)
@@ -68,8 +62,8 @@ class Orchestrator_api
     JSON.parse(res.body)
   end
 
-  def post(endpoint, body)
-    uri = make_uri(endpoint)
+  def post(location, body)
+    uri = URI.parse(location)
     https = create_http(uri)
 
     req = Net::HTTP::Post.new(uri.request_uri)

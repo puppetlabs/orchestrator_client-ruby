@@ -4,11 +4,9 @@ describe Orchestrator_api::Jobs do
 
   before :each do
     config = {
-      'server'              => 'orchestrator.example.lan',
-      'ca_certificate_path' => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
-      'port'                => '8143',
-      'api_version'         => 'v1',
-      'token'               => 'myfaketoken'
+      'service-url' => 'https://orchestrator.example.lan:8143/orchestrator/v1',
+      'ca_cert'     => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
+      'token'       => 'myfaketoken'
     }
 
     @orchestrator = Orchestrator_api.new(config)
