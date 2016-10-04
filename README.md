@@ -35,8 +35,8 @@ require 'orchestrator_api'
 # Requires at least a server name and path to the CA certificate
 
 client = Orchestrator_api.new({
-                                :service-url => 'https://orchestrator.example.lan:8143/orchestrator/v1',
-                                :ca_cert     => '/path/to/cert'
+                                'service-url' => 'https://orchestrator.example.lan:8143/orchestrator/v1',
+                                'ca_cert'     => '/path/to/cert'
                               })
 
 ## Access endpoints through the client object

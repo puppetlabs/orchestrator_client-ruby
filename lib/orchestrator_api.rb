@@ -13,9 +13,6 @@ class Orchestrator_api
 
   def initialize(settings = {})
 
-    #Stringify the hash so it can be merged
-    settings = Hash[settings.map { |k, v| [k.to_s, v] }]
-
     @config = { 'token_path'  => File.join(Dir.home, '.puppetlabs', 'token'),
     }.merge(settings)
 
