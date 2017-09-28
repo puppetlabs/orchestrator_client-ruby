@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-describe Orchestrator_api::Jobs do
+describe OrchestratorClient::Jobs do
 
   before :each do
-    config = {
-      'service-url' => 'https://orchestrator.example.lan:8143/orchestrator/v1',
-      'ca_cert'     => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
-      'token'       => 'myfaketoken'
+    @config = {
+      'service-url' => 'https://orchestrator.example.lan:8143',
+      'cacert' => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
+      'token' => 'myfaketoken'
     }
 
-    @orchestrator = Orchestrator_api.new(config)
+    @orchestrator = OrchestratorClient.new(@config)
   end
 
   describe '#newobject' do
-    it 'takes an orchestrator url and Orchestrator_api object and returns a Orchestrator_api::Jobs object' do
-      expect(@orchestrator.jobs).to be_an_instance_of Orchestrator_api::Jobs
+    it 'takes an orchestrator url and OrchestratorClient object and returns a OrchestratorClient::Jobs object' do
+      expect(@orchestrator.jobs).to be_an_instance_of OrchestratorClient::Jobs
     end
   end
 

@@ -1,4 +1,4 @@
-# Orchestrator_api
+# OrchestratorClient
 
 A simple client for interacting with the Orchestration Services API in Puppet Enterprise
 [Puppet orchestration API](https://docs.puppet.com/pe/latest/api_index.html#puppet-orchestrator-api)
@@ -10,7 +10,7 @@ Currently, this client supports the "V1" endpoints shipped as part of Puppet Ent
 ## Installation
 
 ```shell
-gem install orchestrator_api
+gem install orchestrator_client
 ```
 
 ## Usage
@@ -29,12 +29,12 @@ expected to be at `~/.puppetlabs/token` which is the default location used by
 ### Example
 
 ```ruby
-require 'orchestrator_api'
+require 'orchestrator_client'
 
 # Create a new client
 # Requires at least a server name and path to the CA certificate
 
-client = Orchestrator_api.new({
+client = OrchestratorClient.new({
                                 'service-url' => 'https://orchestrator.example.lan:8143/orchestrator/v1',
                                 'ca_cert'     => '/path/to/cert'
                               })
