@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-describe Orchestrator_api::Error do
+describe OrchestratorClient::ApiError do
 
   it 'is an child class of Exception' do
-    expect(Orchestrator_api::Error).to be <= Exception
+    expect(OrchestratorClient::ApiError).to be <= Exception
   end
 
   %w(ValidationError UnknownJob UnknownEnvironment EmptyEnvironment EmptyTarget DependencyCycle PuppetdbError QueryError UnknownError UnauthorizedError).each do |name|
     describe "::#{name}" do
-      klass = Orchestrator_api::Error.const_get(name)
-      it "should be a child class of Orchestrator_api::Error" do
-        expect(klass).to be <= Orchestrator_api::Error
+      klass = OrchestratorClient::ApiError.const_get(name)
+      it "should be a child class of OrchestratorClient::ApiError" do
+        expect(klass).to be <= OrchestratorClient::ApiError
       end
     end
   end
@@ -40,19 +40,19 @@ describe Orchestrator_api::Error do
       error = item.split(':')
       it "creates an exception based on an \"#{error.first}\" error response from the server" do
         res = FakeResponse.new(error.first)
-        klass = Orchestrator_api::Error.const_get(error[1])
-        expect( Orchestrator_api::Error.make_error_from_response(res) ).to be_an_instance_of klass
+        klass = OrchestratorClient::ApiError.const_get(error[1])
+        expect( OrchestratorClient::ApiError.make_error_from_response(res) ).to be_an_instance_of klass
       end
     end
 
-    it "creates an Orchestrator_api::Error::EndpointError exception when the response from the server isn't parsable JSON" do
+    it "creates an OrchestratorClient::ApiError exception when the response from the server isn't parsable JSON" do
       res = FakeResponse.new("makesforunparsablejson\"")
-      expect( Orchestrator_api::Error.make_error_from_response(res)).to be_an_instance_of Orchestrator_api::Error::EndpointError
+      expect( OrchestratorClient::ApiError.make_error_from_response(res)).to be_an_instance_of OrchestratorClient::BadResponse
     end
 
-    it "creates an Orchestrator_api::Error::EndpointError exception when it does not understand the error from the service" do
+    it "creates an OrchestratorClient::ApiError exception when it does not understand the error from the service" do
       res = FakeResponse.new('notarealerror')
-      expect( Orchestrator_api::Error.make_error_from_response(res)).to be_an_instance_of Orchestrator_api::Error::EndpointError
+      expect( OrchestratorClient::ApiError.make_error_from_response(res)).to be_an_instance_of OrchestratorClient::ApiError
     end
   end
 end

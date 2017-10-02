@@ -1,22 +1,28 @@
 require 'spec_helper'
 
-describe Orchestrator_api::Command do
+describe OrchestratorClient::Command do
 
   before :each do
-    @url_base = "https://master.puppetlabs.vm:8143/orchestrator/v1"
+    @url_base = "https://orchestrator.example.lan:8143"
 
-    config = {
-      'service-url' => 'https://orchestrator.example.lan:8143/orchestrator/v1',
-      'ca_cert'     => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
-      'token'       => 'myfaketoken'
+    @config = {
+      'service-url'              => @url_base,
+      'cacert' => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
+      'token'               => 'myfaketoken',
     }
 
-    @orchestrator = Orchestrator_api.new(config)
+    @orchestrator = OrchestratorClient.new(@config)
+
+    @scope = {'nodes' => ['example.com']}
+    @deploy_opts = { 'scope' => @scope }
+    @task_opts = {'scope' => @scope,
+                  'task' => 'my::task',
+                  'params' => {}}
   end
 
   describe '#newobject' do
-    it 'takes an orchestrator url and Orchestrator_api object and returns a Orchestrator_api::Command object' do
-      expect(@orchestrator.command).to be_an_instance_of Orchestrator_api::Command
+    it 'takes an orchestrator url and OrchestratorClient object and returns a OrchestratorClient::Command object' do
+      expect(@orchestrator.command).to be_an_instance_of OrchestratorClient::Command
     end
   end
 
@@ -25,27 +31,24 @@ describe Orchestrator_api::Command do
       response = "{\n  \"job\" : {\n    \"id\" : \"https://orchestrator.example.lan:8143/orchestrator/v1/jobs/1\",\n    \"name\" : \"1\"\n  }\n}"
 
       stub_request(:post, "https://orchestrator.example.lan:8143/orchestrator/v1/command/deploy").
-        with(:body => "{\"environment\":\"production\"}",
+        with(:body => @deploy_opts.to_json,
              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Authentication'=>'myfaketoken'}).
         to_return(:status => 202, :body => response, :headers => {})
 
-      expect(@orchestrator.command.deploy('production')).to be_an_instance_of Hash
+      expect(@orchestrator.command.deploy(@deploy_opts)).to be_an_instance_of Hash
     end
+  end
 
-    it 'takes an environment and hash of additional details' do
+  describe '#task' do
+    it 'takes an environment and issues a deploy command' do
       response = "{\n  \"job\" : {\n    \"id\" : \"https://orchestrator.example.lan:8143/orchestrator/v1/jobs/1\",\n    \"name\" : \"1\"\n  }\n}"
 
-      stub_request(:post, "https://orchestrator.example.lan:8143/orchestrator/v1/command/deploy").
-        with(:body => "{\"scope\":{\"nodes\":[\"node1.example.lan\",\"node2.example.lan\"]},\"environment\":\"production\"}",
+      stub_request(:post, "https://orchestrator.example.lan:8143/orchestrator/v1/command/task").
+        with(:body => @task_opts.to_json,
              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Authentication'=>'myfaketoken'}).
         to_return(:status => 202, :body => response, :headers => {})
 
-      details = {
-        'scope' => {
-          'nodes' => ['node1.example.lan','node2.example.lan']
-        }
-      }
-      expect(@orchestrator.command.deploy('production',details)).to be_an_instance_of Hash
+      expect(@orchestrator.command.task(@task_opts)).to be_an_instance_of Hash
     end
   end
 

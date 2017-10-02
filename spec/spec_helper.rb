@@ -1,2 +1,2 @@
 require 'webmock/rspec'
-require 'orchestrator_api'
+require 'orchestrator_client'
