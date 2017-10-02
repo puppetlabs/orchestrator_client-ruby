@@ -3,10 +3,8 @@
 require 'orchestrator_client'
 require 'json'
 
-conf_file = File.expand_path('~/.puppetlabs/client-tools/orchestrator.conf')
-settings = File.open(conf_file) { |f| JSON.load(f) }
 
-orch = OrchestratorClient.new(settings['options'])
+orch = OrchestratorClient.new({}, true)
 
 options = {'scope' => {'query' => 'nodes {}'},
            'environment' => 'production',

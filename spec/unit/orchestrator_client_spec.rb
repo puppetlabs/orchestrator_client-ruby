@@ -30,7 +30,7 @@ describe OrchestratorClient do
 
     it "complains when a configuration value for 'cacert' is not provided" do
       @config.delete('cacert')
-      expect{ OrchestratorClient.new(@config) }.to raise_error("'cacert' is required in config")
+      expect{ OrchestratorClient.new({'cacert' => nil, 'service-url' => 'https://example.com'}) }.to raise_error("'cacert' is required in config")
     end
   end
 
