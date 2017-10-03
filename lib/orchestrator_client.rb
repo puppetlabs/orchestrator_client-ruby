@@ -8,35 +8,17 @@ class OrchestratorClient
   require 'orchestrator_client/command'
   require 'orchestrator_client/jobs'
   require 'orchestrator_client/job'
+  require 'orchestrator_client/config'
 
-  attr_accessor :config, :token
+  attr_accessor :config
 
-  def initialize(settings = {})
-
-    @config = { 'token_path'  => File.join(Dir.home, '.puppetlabs', 'token'),
-                'api_version' => 'v1'
-    }.merge(settings)
-
-    if @config['token']
-      @token = @config['token']
-    else
-      @token = File.read(@config['token_path'])
-    end
-
-    if @config['service-url'].nil?
-      raise OrchestratorClient::ConfigError.new("'service-url' is required in config")
-    end
-
-     @config['service-url'] += '/' if @config['service-url'] !~ /\/$/
-     @config['service-url'] += 'orchestrator/v1/'
-
-    if @config['cacert'].nil?
-      raise  OrchestratorClient::ConfigError.new("'cacert' is required in config")
-    end
+  def initialize(overrides, load_files=false)
+    @config = Config.new(overrides, load_files)
+    @config.validate
   end
 
   def make_uri(path)
-    URI.parse("#{config['service-url']}#{path}")
+    URI.parse("#{config.root_url}#{path}")
   end
 
   def create_http(uri)
@@ -53,7 +35,7 @@ class OrchestratorClient
     https = create_http(uri)
     req = Net::HTTP::Get.new(uri)
     req['Content-Type'] = "application/json"
-    req.add_field('X-Authentication', token)
+    req.add_field('X-Authentication', @config.token)
     res = https.request(req)
 
     if res.code != "200"
@@ -69,7 +51,7 @@ class OrchestratorClient
 
     req = Net::HTTP::Post.new(uri)
     req['Content-Type'] = "application/json"
-    req.add_field('X-Authentication', token)
+    req.add_field('X-Authentication', @config.token)
     req.body = body.to_json
     res = https.request(req)
 
