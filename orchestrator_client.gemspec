@@ -12,6 +12,6 @@ Gem::Specification.new do |s|
     f.match(%r{^(spec|scripts)/})
   end
   s.homepage      = 'https://github.com/puppetlabs/ruby-orchestrator_api'
-  s.license       = "apache 2.0"
+  s.license       = "Apache-2.0"
   s.require_paths = ["lib"]
 end
