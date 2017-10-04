@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name          = 'orchestrator_client'
-  s.version       = '0.0.1'
+  s.version       = '0.1.0'
   s.summary       = "Simple Ruby client library for PE Orchestration Services"
   s.authors       = "Puppet"
   s.email         = 'info@puppetlabs.com'
