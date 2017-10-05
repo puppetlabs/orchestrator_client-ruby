@@ -40,7 +40,7 @@ class OrchestratorClient::Config
   def load_config
     config = defaults
     if @load_files
-      if File.exists?(global_conf) && file.readable?(global_conf)
+      if File.exists?(global_conf) && File.readable?(global_conf)
         config = config.merge(load_file(global_conf))
       end
 
