@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(spec|scripts)/})
   end
-  s.homepage      = 'https://github.com/puppetlabs/ruby-orchestrator_api'
+  s.homepage      = 'https://github.com/puppetlabs/orchestrator_client-ruby'
   s.license       = "Apache-2.0"
   s.require_paths = ["lib"]
 end
