@@ -2,7 +2,11 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'rspec'
-gem 'webmock'
+group :test do
+  gem 'rspec'
+  gem 'webmock'
+end
 
-gem 'pry'
+group :development do
+  gem 'pry'
+end
