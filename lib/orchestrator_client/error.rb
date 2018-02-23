@@ -3,11 +3,11 @@ class OrchestratorClient::ConfigError < RuntimeError
 end
 
 class OrchestratorClient::ApiError < RuntimeError
+  attr_reader :data, :code
 
   def initialize(data,code)
     @code = code
-    @kind = data['kind']
-    @details = data['details']
+    @data = data
     super(data['msg'])
   end
 

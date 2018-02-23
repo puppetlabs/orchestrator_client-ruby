@@ -6,6 +6,13 @@ describe OrchestratorClient::ApiError do
     expect(OrchestratorClient::ApiError).to be <= Exception
   end
 
+  it 'exposes data' do
+    data = {'msg' => 'oops',
+            'kind' => 'mistake',
+            'details' => { 'key' => 'val' } }
+    expect(OrchestratorClient::ApiError.new(data, '400').data).to  eq(data)
+  end
+
   %w(ValidationError UnknownJob UnknownEnvironment EmptyEnvironment EmptyTarget DependencyCycle PuppetdbError QueryError UnknownError UnauthorizedError).each do |name|
     describe "::#{name}" do
       klass = OrchestratorClient::ApiError.const_get(name)
