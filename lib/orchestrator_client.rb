@@ -55,7 +55,7 @@ class OrchestratorClient
     req.body = body.to_json
     res = https.request(req)
 
-    if res.code != "202"
+    unless Set.new(["202", "200"]).include? res.code
       raise OrchestratorClient::ApiError.make_error_from_response(res)
     end
 
@@ -75,7 +75,12 @@ class OrchestratorClient
   end
 
   def run_task(options)
-    job = OrchestratorClient::Job.new(self, options, :task)
+    if options[:plan_job] || options['plan_job']
+      type = :plan_task
+    else
+      type = :task
+    end
+    job = OrchestratorClient::Job.new(self, options, type)
     job.start
     job.wait
     job.nodes['items']

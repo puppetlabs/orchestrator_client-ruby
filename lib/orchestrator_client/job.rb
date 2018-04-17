@@ -26,6 +26,8 @@ class OrchestratorClient::Job
       result = @client.command.deploy(options)
     when :task
       result = @client.command.task(options)
+    when :plan_task
+      result = @client.command.plan_task(options)
     end
 
     @job_name = result['job']['name']
