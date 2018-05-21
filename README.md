@@ -22,9 +22,10 @@ expected to be at `~/.puppetlabs/token` which is the default location used by
 ### initialization Settings
 
 * `service-url` **[required]** - Base URL for the location of the Orchestrator API service
-* `ca_cert` **[required]** - Path to the CA certificate file needed to verify the SSL connection to the API.
-* `token_path`- Path to a file with the RBAC token in it (defaults to `~/.puppetlabs/token`)
+* `cacert` **[required]** - Path to the CA certificate file needed to verify the SSL connection to the API.
+* `token-file`- Path to a file with the RBAC token in it (defaults to `~/.puppetlabs/token`)
 * `token` - Pass directly the RBAC token, if specified the token will be used instead of a token from file.
+* `User-Agent`- Set `User-Agent` header for HTTP requests. Defaults to `OrchestratorRubyClient/[VERSION]`
 
 ### Example
 
@@ -36,7 +37,7 @@ require 'orchestrator_client'
 
 client = OrchestratorClient.new({
                                 'service-url' => 'https://orchestrator.example.lan:8143/orchestrator/v1',
-                                'ca_cert'     => '/path/to/cert'
+                                'cacert'     => '/path/to/cert'
                               })
 
 ## Access endpoints through the client object

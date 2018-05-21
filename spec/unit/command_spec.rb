@@ -32,7 +32,7 @@ describe OrchestratorClient::Command do
 
       stub_request(:post, "https://orchestrator.example.lan:8143/orchestrator/v1/command/deploy").
         with(:body => @deploy_opts.to_json,
-             :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Authentication'=>'myfaketoken'}).
+             :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"OrchestratorRubyClient/#{OrchestratorClient::VERSION}", 'X-Authentication'=>'myfaketoken'}).
         to_return(:status => 202, :body => response, :headers => {})
 
       expect(@orchestrator.command.deploy(@deploy_opts)).to be_an_instance_of Hash
@@ -45,7 +45,7 @@ describe OrchestratorClient::Command do
 
       stub_request(:post, "https://orchestrator.example.lan:8143/orchestrator/v1/command/task").
         with(:body => @task_opts.to_json,
-             :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Authentication'=>'myfaketoken'}).
+             :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"OrchestratorRubyClient/#{OrchestratorClient::VERSION}", 'X-Authentication'=>'myfaketoken'}).
         to_return(:status => 202, :body => response, :headers => {})
 
       expect(@orchestrator.command.task(@task_opts)).to be_an_instance_of Hash
@@ -58,7 +58,7 @@ describe OrchestratorClient::Command do
 
       stub_request(:post, "https://orchestrator.example.lan:8143/orchestrator/v1/command/stop").
         with(:body => "{\"job\":\"1\"}",
-             :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Authentication'=>'myfaketoken'}).
+             :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"OrchestratorRubyClient/#{OrchestratorClient::VERSION}", 'X-Authentication'=>'myfaketoken'}).
         to_return(:status => 202, :body => response, :headers => {})
 
       expect(@orchestrator.command.stop(1)).to be_an_instance_of Hash
