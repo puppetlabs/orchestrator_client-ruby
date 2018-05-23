@@ -1,4 +1,5 @@
 require 'json'
+require 'orchestrator_client/version'
 
 class OrchestratorClient::Config
 
