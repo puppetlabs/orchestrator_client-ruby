@@ -34,6 +34,7 @@ class OrchestratorClient::Config
   def defaults
     { 'cacert' => cacert,
       'token-file' => File.join(user_root, 'token'),
+      'User-Agent' => "OrchestratorRubyClient/#{OrchestratorClient::VERSION}"
     }
   end
 

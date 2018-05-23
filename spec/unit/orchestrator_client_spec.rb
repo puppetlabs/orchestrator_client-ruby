@@ -37,7 +37,17 @@ describe OrchestratorClient do
   describe "#get" do
     it 'takes an endpoint and parses the response as JSON' do
       stub_request(:get, "https://orchestrator.example.lan:8143/orchestrator/v1/endpoint").
-        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Authentication'=>'myfaketoken'}).
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"OrchestratorRubyClient/#{OrchestratorClient::VERSION}", 'X-Authentication'=>'myfaketoken'}).
+        to_return(:status => 200, :body => "{}", :headers => {})
+
+      expect(@orchestrator_api.get('endpoint')).to be_an_instance_of Hash
+    end
+
+    it 'updates User-Agent header' do
+      @config['User-Agent'] = 'foo'
+      @orchestrator_api = OrchestratorClient.new(@config)
+      stub_request(:get, "https://orchestrator.example.lan:8143/orchestrator/v1/endpoint").
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"foo", 'X-Authentication'=>'myfaketoken'}).
         to_return(:status => 200, :body => "{}", :headers => {})
 
       expect(@orchestrator_api.get('endpoint')).to be_an_instance_of Hash
@@ -48,10 +58,20 @@ describe OrchestratorClient do
     it 'takes an endpoint, endpoint, and parses the response as JSON' do
       stub_request(:post, "https://orchestrator.example.lan:8143/orchestrator/v1/endpoint").
         with( :body => "{\"data\":\"atad\"}",
-              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby', 'X-Authentication'=>'myfaketoken'}).
+              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"OrchestratorRubyClient/#{OrchestratorClient::VERSION}", 'X-Authentication'=>'myfaketoken'}).
         to_return(:status => 202, :body => "{}", :headers => {})
 
       expect(@orchestrator_api.post('endpoint',{'data' => 'atad'})).to be_an_instance_of Hash
+    end
+
+    it 'updates User-Agent header' do
+      @config['User-Agent'] = 'foo'
+      @orchestrator_api = OrchestratorClient.new(@config)
+      stub_request(:get, "https://orchestrator.example.lan:8143/orchestrator/v1/endpoint").
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"foo", 'X-Authentication'=>'myfaketoken'}).
+        to_return(:status => 200, :body => "{}", :headers => {})
+
+      expect(@orchestrator_api.get('endpoint')).to be_an_instance_of Hash
     end
   end
 end

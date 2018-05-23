@@ -35,6 +35,7 @@ class OrchestratorClient
     https = create_http(uri)
     req = Net::HTTP::Get.new(uri)
     req['Content-Type'] = "application/json"
+    req['User-Agent'] = @config['User-Agent']
     req.add_field('X-Authentication', @config.token)
     res = https.request(req)
 
@@ -51,6 +52,7 @@ class OrchestratorClient
 
     req = Net::HTTP::Post.new(uri)
     req['Content-Type'] = "application/json"
+    req['User-Agent'] = @config['User-Agent']
     req.add_field('X-Authentication', @config.token)
     req.body = body.to_json
     res = https.request(req)
