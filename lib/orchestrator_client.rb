@@ -24,7 +24,7 @@ class OrchestratorClient
   def create_http(uri)
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
-    http.ssl_version = :TLSv1
+    http.ssl_version = :TLSv1_2
     http.ca_file = config['cacert']
     http.verify_mode = OpenSSL::SSL::VERIFY_PEER
     http
