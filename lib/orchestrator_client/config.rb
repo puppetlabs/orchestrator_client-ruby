@@ -75,7 +75,7 @@ class OrchestratorClient::Config
   end
 
   def load_token
-    @config['token'] || File.open(config['token-file']) { |f| f.read }
+    @config['token'] || File.open(config['token-file']) { |f| f.read.strip }
   end
 
   def token
