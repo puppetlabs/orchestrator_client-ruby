@@ -35,7 +35,9 @@ class OrchestratorClient::Config
   def defaults
     { 'cacert' => cacert,
       'token-file' => File.join(user_root, 'token'),
-      'User-Agent' => "OrchestratorRubyClient/#{OrchestratorClient::VERSION}"
+      'User-Agent' => "OrchestratorRubyClient/#{OrchestratorClient::VERSION}",
+      'job-poll-interval' => 1,
+      'job-poll-timeout' => 1000,
     }
   end
 

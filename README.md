@@ -26,6 +26,8 @@ expected to be at `~/.puppetlabs/token` which is the default location used by
 * `token-file`- Path to a file with the RBAC token in it (defaults to `~/.puppetlabs/token`)
 * `token` - Pass directly the RBAC token, if specified the token will be used instead of a token from file.
 * `User-Agent`- Set `User-Agent` header for HTTP requests. Defaults to `OrchestratorRubyClient/[VERSION]`
+* `job-poll-interval`- Set the default amount of time to sleep when polling in Orchestrator::Job#wait and #each\_event
+* `job-poll-timeout`- Set the default maximum amount of time to wait in Orchestrator::Job#wait
 
 ### Example
 
