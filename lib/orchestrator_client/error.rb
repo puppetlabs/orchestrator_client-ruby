@@ -17,7 +17,7 @@ class OrchestratorClient::ApiError < RuntimeError
     rescue
       return OrchestratorClient::BadResponse.new("Response body was not valid JSON: #{res.body}")
     end
-    code = res.code
+    code = res.status
 
     case data['kind']
     when 'puppetlabs.validators/validation-error'

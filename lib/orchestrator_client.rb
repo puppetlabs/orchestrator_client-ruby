@@ -2,6 +2,8 @@ require 'net/https'
 require 'uri'
 require 'json'
 require 'openssl'
+require 'faraday'
+require 'net/http/persistent'
 
 class OrchestratorClient
   require 'orchestrator_client/error'
@@ -11,35 +13,35 @@ class OrchestratorClient
   require 'orchestrator_client/config'
 
   attr_accessor :config
+  attr_reader :http
 
   def initialize(overrides, load_files=false)
     @config = Config.new(overrides, load_files)
     @config.validate
+    @http = create_http(config.root_url)
   end
 
   def make_uri(path)
     URI.parse("#{config.root_url}#{path}")
   end
 
-  def create_http(uri)
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-    http.ssl_version = :TLSv1_2
-    http.ca_file = config['cacert']
-    http.verify_mode = OpenSSL::SSL::VERIFY_PEER
-    http
+  def create_http(root_url)
+    Faraday.new(url: root_url) do |f|
+      f.headers['Content-Type'] = 'application/json'
+      f.headers['X-Authentication'] = config.token
+      f.headers['User-Agent'] = config['User-Agent']
+      f.ssl['ca_file'] = config['cacert']
+      f.ssl['version'] = :TLSv1_2
+      f.adapter :net_http_persistent, pool_size: 5 do |http|
+        http.idle_timeout = 30
+      end
+    end
   end
 
   def get(location)
-    uri = make_uri(location)
-    https = create_http(uri)
-    req = Net::HTTP::Get.new(uri)
-    req['Content-Type'] = "application/json"
-    req['User-Agent'] = @config['User-Agent']
-    req.add_field('X-Authentication', @config.token)
-    res = https.request(req)
+    res = http.get(location)
 
-    if res.code != "200"
+    if res.status != 200
       raise OrchestratorClient::ApiError.make_error_from_response(res)
     end
 
@@ -47,17 +49,9 @@ class OrchestratorClient
   end
 
   def post(location, body)
-    uri = make_uri(location)
-    https = create_http(uri)
+    res = http.post(location, body.to_json)
 
-    req = Net::HTTP::Post.new(uri)
-    req['Content-Type'] = "application/json"
-    req['User-Agent'] = @config['User-Agent']
-    req.add_field('X-Authentication', @config.token)
-    req.body = body.to_json
-    res = https.request(req)
-
-    unless Set.new(["202", "200"]).include? res.code
+    unless Set.new([202, 200]).include? res.status
       raise OrchestratorClient::ApiError.make_error_from_response(res)
     end
 
