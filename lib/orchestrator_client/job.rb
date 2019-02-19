@@ -16,6 +16,8 @@ class OrchestratorClient::Job
 
   def initialize(client, options = {}, type=:deploy)
     @client = client
+    @poll_interval = options.delete(:_poll_interval) || client.config['job-poll-interval']
+    @poll_timeout = options.delete(:_poll_timeout) || client.config['job-poll-timeout']
     @options = options
     @type = type
   end
@@ -71,7 +73,7 @@ class OrchestratorClient::Job
       events = @client.jobs.events(@job_name)
       start = events['next-events']['event']
       if events['items'].empty?
-        sleep 1
+        sleep @poll_interval
       else
         events['items'].each do |event|
           finished = true if DONE_EVENTS.include?(event['type'])
@@ -81,15 +83,15 @@ class OrchestratorClient::Job
     end
   end
 
-  def wait(timeout=1000)
+  def wait(timeout=@poll_timeout)
     counter = 0
     while counter < timeout
       get_details
       if DONE_STATES.include?(details['state'])
         return report
       end
-      sleep 1
-      counter += 1
+      sleep @poll_interval
+      counter += @poll_interval
     end
   end
 end
