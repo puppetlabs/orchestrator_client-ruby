@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'tempfile'
 
 describe OrchestratorClient do
 
@@ -31,6 +32,20 @@ describe OrchestratorClient do
     it "complains when a configuration value for 'cacert' is not provided" do
       @config.delete('cacert')
       expect{ OrchestratorClient.new({'cacert' => nil, 'service-url' => 'https://example.com'}) }.to raise_error("'cacert' is required in config")
+    end
+  end
+
+  context "When loading a token from file" do
+    it "complains when illegal characters are detected" do
+      @config.delete('token')
+      token_file = Tempfile.new('bad_token')
+      token_file.write("oops\nbadchars")
+      token_file.flush
+      @config['token-file'] = token_file.path
+      @orchestrator_api = OrchestratorClient.new(@config)
+      expect{ @orchestrator_api.config.token }.to raise_error("'#{token_file.path}' contains illegal characters")
+      token_file.close
+      token_file.unlink
     end
   end
 
