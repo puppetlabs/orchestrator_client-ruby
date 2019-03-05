@@ -21,10 +21,6 @@ class OrchestratorClient
     @http = create_http(config.root_url)
   end
 
-  def make_uri(path)
-    URI.parse("#{config.root_url}#{path}")
-  end
-
   def create_http(root_url)
     Faraday.new(url: root_url) do |f|
       f.headers['Content-Type'] = 'application/json'
