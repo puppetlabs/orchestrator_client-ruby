@@ -25,9 +25,9 @@ describe OrchestratorClient::ApiError do
   describe "::make_error_from_response" do
     before(:all) do
       class FakeResponse
-        attr_reader :code, :body
+        attr_reader :status, :body
         def initialize(error)
-          @code = '400'
+          @status = 400
           @body = "{\"kind\":\"#{error}\"}"
         end
       end

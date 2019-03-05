@@ -14,4 +14,7 @@ Gem::Specification.new do |s|
   s.homepage      = 'https://github.com/puppetlabs/orchestrator_client-ruby'
   s.license       = "Apache-2.0"
   s.require_paths = ["lib"]
+
+  s.add_dependency 'faraday'
+  s.add_dependency 'net-http-persistent'
 end
