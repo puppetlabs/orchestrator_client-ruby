@@ -42,8 +42,7 @@ describe OrchestratorClient do
       token_file.write("oops\nbadchars")
       token_file.flush
       @config['token-file'] = token_file.path
-      @orchestrator_api = OrchestratorClient.new(@config)
-      expect{ @orchestrator_api.config.token }.to raise_error("'#{token_file.path}' contains illegal characters")
+      expect{ OrchestratorClient.new(@config) }.to raise_error("'#{token_file.path}' contains illegal characters")
       token_file.close
       token_file.unlink
     end
