@@ -69,6 +69,10 @@ issues](https://github.com/puppetlabs/orchestrator_api-ruby/issues).
 If you are interested in contributing to this project, please see the
 [Contribution Guidelines](CONTRIBUTING.md)
 
+## Releasing
+
+ Use the https://cinext-jenkinsmaster-sre-prod-1.delivery.puppetlabs.net/job/qe_orchestrator-client-ruby_init-multijob_master/ job to release. This pipeline will create the tag you specify and push release to rubygems.
+
 ## Authors
 
 Tom Linkin <tom@puppet.com>
