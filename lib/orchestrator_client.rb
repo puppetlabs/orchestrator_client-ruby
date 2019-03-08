@@ -3,7 +3,6 @@ require 'uri'
 require 'json'
 require 'openssl'
 require 'faraday'
-require 'net/http/persistent'
 
 class OrchestratorClient
   require 'orchestrator_client/error'
@@ -28,8 +27,13 @@ class OrchestratorClient
       f.headers['User-Agent'] = config['User-Agent']
       f.ssl['ca_file'] = config['cacert']
       f.ssl['version'] = :TLSv1_2
-      f.adapter :net_http_persistent, pool_size: 5 do |http|
-        http.idle_timeout = 30
+      # Do not use net-http-persistent on windows
+      if !!File::ALT_SEPARATOR
+        f.adapter :net_http
+      else
+        f.adapter :net_http_persistent, pool_size: 5 do |http|
+          http.idle_timeout = 30
+        end
       end
     end
   end
