@@ -63,6 +63,15 @@ class OrchestratorClient::Config
       raise OrchestratorClient::ConfigError.new("'service-url' is required in config")
     end
 
+    begin
+      service_url = URI.parse(config['service-url'])
+      unless service_url.kind_of?(URI::HTTP) || service_url.kind_of?(URI::HTTPS)
+        raise OrchestratorClient::ConfigError.new("'#{config['service-url']}' is an invalid service-url")
+      end
+    rescue URI::InvalidURIError
+      raise OrchestratorClient::ConfigError.new("'#{config['service-url']}' is an invalid service-url")
+    end
+
     if config['cacert'].nil?
       raise  OrchestratorClient::ConfigError.new("'cacert' is required in config")
     end
