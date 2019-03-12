@@ -89,12 +89,16 @@ class OrchestratorClient::Config
     if @config['token']
       @config['token']
     else
-      token = File.open(config['token-file']) { |f| f.read.strip }
-      if token != URI.escape(token)
-        raise OrchestratorClient::ConfigError.new("'#{config['token-file']}' contains illegal characters")
+      begin
+        token = File.open(config['token-file']) { |f| f.read.strip }
+        if token != URI.escape(token)
+          raise OrchestratorClient::ConfigError.new("token-file '#{config['token-file']}' contains illegal characters")
+        end
+        @config['token'] = token
+        @config['token']
+      rescue Errno::ENOENT
+        raise OrchestratorClient::ConfigError.new("token-file '#{config['token-file']}' is unreadable")
       end
-      @config['token'] = token
-      @config['token']
     end
   end
 

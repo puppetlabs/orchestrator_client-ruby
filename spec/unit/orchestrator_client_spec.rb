@@ -48,9 +48,15 @@ describe OrchestratorClient do
       token_file.write("oops\nbadchars")
       token_file.flush
       @config['token-file'] = token_file.path
-      expect{ OrchestratorClient.new(@config) }.to raise_error("'#{token_file.path}' contains illegal characters")
+      expect{ OrchestratorClient.new(@config) }.to raise_error("token-file '#{token_file.path}' contains illegal characters")
       token_file.close
       token_file.unlink
+    end
+
+    it "complains when token-file cannot be read" do
+      @config.delete('token')
+      @config['token-file'] = '/bad/path'
+      expect{ OrchestratorClient.new(@config) }.to raise_error("token-file '#{@config['token-file']}' is unreadable")
     end
   end
 
