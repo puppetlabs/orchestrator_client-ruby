@@ -29,6 +29,12 @@ describe OrchestratorClient do
       expect{ OrchestratorClient.new(@config) }.to raise_error("'service-url' is required in config")
     end
 
+    it "complains when an invalid 'service-url' is provided" do
+      @config.delete('service-url')
+      @config['service-url'] = 'foo'
+      expect{ OrchestratorClient.new(@config) }.to raise_error("'#{@config['service-url']}' is an invalid service-url")
+    end
+
     it "complains when a configuration value for 'cacert' is not provided" do
       @config.delete('cacert')
       expect{ OrchestratorClient.new({'cacert' => nil, 'service-url' => 'https://example.com'}) }.to raise_error("'cacert' is required in config")
@@ -42,9 +48,15 @@ describe OrchestratorClient do
       token_file.write("oops\nbadchars")
       token_file.flush
       @config['token-file'] = token_file.path
-      expect{ OrchestratorClient.new(@config) }.to raise_error("'#{token_file.path}' contains illegal characters")
+      expect{ OrchestratorClient.new(@config) }.to raise_error("token-file '#{token_file.path}' contains illegal characters")
       token_file.close
       token_file.unlink
+    end
+
+    it "complains when token-file cannot be read" do
+      @config.delete('token')
+      @config['token-file'] = '/bad/path'
+      expect{ OrchestratorClient.new(@config) }.to raise_error("token-file '#{@config['token-file']}' is unreadable")
     end
   end
 

@@ -63,6 +63,15 @@ class OrchestratorClient::Config
       raise OrchestratorClient::ConfigError.new("'service-url' is required in config")
     end
 
+    begin
+      service_url = URI.parse(config['service-url'])
+      unless service_url.kind_of?(URI::HTTP) || service_url.kind_of?(URI::HTTPS)
+        raise OrchestratorClient::ConfigError.new("'#{config['service-url']}' is an invalid service-url")
+      end
+    rescue URI::InvalidURIError
+      raise OrchestratorClient::ConfigError.new("'#{config['service-url']}' is an invalid service-url")
+    end
+
     if config['cacert'].nil?
       raise  OrchestratorClient::ConfigError.new("'cacert' is required in config")
     end
@@ -80,12 +89,16 @@ class OrchestratorClient::Config
     if @config['token']
       @config['token']
     else
-      token = File.open(config['token-file']) { |f| f.read.strip }
-      if token != URI.escape(token)
-        raise OrchestratorClient::ConfigError.new("'#{config['token-file']}' contains illegal characters")
+      begin
+        token = File.open(config['token-file']) { |f| f.read.strip }
+        if token != URI.escape(token)
+          raise OrchestratorClient::ConfigError.new("token-file '#{config['token-file']}' contains illegal characters")
+        end
+        @config['token'] = token
+        @config['token']
+      rescue Errno::ENOENT
+        raise OrchestratorClient::ConfigError.new("token-file '#{config['token-file']}' is unreadable")
       end
-      @config['token'] = token
-      @config['token']
     end
   end
 
