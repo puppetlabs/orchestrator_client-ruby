@@ -55,7 +55,12 @@ class OrchestratorClient::Config
       end
     end
 
-    config.merge(@overrides)
+    config.merge!(@overrides)
+
+    %w[token-file cacert].each do |f|
+      config[f] = File.expand_path(config[f]) if config[f]
+    end
+    config
   end
 
   def validate
@@ -75,6 +80,8 @@ class OrchestratorClient::Config
     if config['cacert'].nil?
       raise  OrchestratorClient::ConfigError.new("'cacert' is required in config")
     end
+
+    validate_file('cacert', config['cacert'])
   end
 
   def config
@@ -89,16 +96,13 @@ class OrchestratorClient::Config
     if @config['token']
       @config['token']
     else
-      begin
-        token = File.open(config['token-file']) { |f| f.read.strip }
-        if token != URI.escape(token)
-          raise OrchestratorClient::ConfigError.new("token-file '#{config['token-file']}' contains illegal characters")
-        end
-        @config['token'] = token
-        @config['token']
-      rescue Errno::ENOENT
-        raise OrchestratorClient::ConfigError.new("token-file '#{config['token-file']}' is unreadable")
+      validate_file('token-file', config['token-file'])
+      token = File.open(config['token-file']) { |f| f.read.strip }
+      if token != URI.escape(token)
+        raise OrchestratorClient::ConfigError.new("token-file '#{config['token-file']}' contains illegal characters")
       end
+      @config['token'] = token
+      @config['token']
     end
   end
 
@@ -118,5 +122,16 @@ class OrchestratorClient::Config
 
   def [](key)
     @config[key]
+  end
+
+  def validate_file(type, path)
+    stat = File.stat(path)
+    if !stat.readable?
+      OrchestratorClient::ConfigError.new("#{type} '#{path}' is unreadable")
+    elsif !stat.file?
+      OrchestratorClient::ConfigError.new("#{type} '#{path}' is not a file")
+    end
+  rescue Errno::ENOENT
+    raise OrchestratorClient::ConfigError.new("#{type} '#{path}' does not exist")
   end
 end
