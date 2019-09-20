@@ -39,6 +39,11 @@ describe OrchestratorClient do
       @config.delete('cacert')
       expect{ OrchestratorClient.new({'cacert' => nil, 'service-url' => 'https://example.com'}) }.to raise_error("'cacert' is required in config")
     end
+
+    it "complains when a cacert path does not exist" do
+      @config['cacert'] = '~/bad/path'
+      expect{ OrchestratorClient.new(@config) }.to raise_error("cacert '#{Dir.home}/bad/path' does not exist")
+    end
   end
 
   context "When loading a token from file" do
@@ -55,8 +60,8 @@ describe OrchestratorClient do
 
     it "complains when token-file cannot be read" do
       @config.delete('token')
-      @config['token-file'] = '/bad/path'
-      expect{ OrchestratorClient.new(@config) }.to raise_error("token-file '#{@config['token-file']}' is unreadable")
+      @config['token-file'] = '~/bad/path'
+      expect{ OrchestratorClient.new(@config) }.to raise_error("token-file '#{Dir.home}/bad/path' does not exist")
     end
   end
 
