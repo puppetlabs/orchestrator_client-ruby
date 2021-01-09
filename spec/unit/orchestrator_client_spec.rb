@@ -18,7 +18,6 @@ describe OrchestratorClient do
       expect(@orchestrator_api).to be_an_instance_of OrchestratorClient
     end
 
-
     it "has methods with objects that are not nil" do
       expect(@orchestrator_api.command).to be_truthy
       expect(@orchestrator_api.jobs).to be_truthy
@@ -44,6 +43,27 @@ describe OrchestratorClient do
       @config['cacert'] = '~/bad/path'
       expect{ OrchestratorClient.new(@config) }.to raise_error("cacert '#{Dir.home}/bad/path' does not exist")
     end
+  end
+
+  it "sets read_timeout" do
+    expect_any_instance_of(Net::HTTP::Persistent).to receive(:read_timeout=).and_call_original
+    @config['read-timeout'] = 10
+    client = OrchestratorClient.new(@config)
+    stub_request(:get, "https://orchestrator.example.lan:8143/orchestrator/v1/endpoint").
+      with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"OrchestratorRubyClient/#{OrchestratorClient::VERSION}", 'X-Authentication'=>'myfaketoken'}).
+      to_return(:status => 200, :body => "{}", :headers => {})
+
+    client.get('endpoint')
+  end
+
+  it "does not set read_timeout if not specified" do
+    expect_any_instance_of(Net::HTTP::Persistent).not_to receive(:read_timeout=)
+    client = OrchestratorClient.new(@config)
+    stub_request(:get, "https://orchestrator.example.lan:8143/orchestrator/v1/endpoint").
+      with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>"OrchestratorRubyClient/#{OrchestratorClient::VERSION}", 'X-Authentication'=>'myfaketoken'}).
+      to_return(:status => 200, :body => "{}", :headers => {})
+
+    client.get('endpoint')
   end
 
   context "When loading a token from file" do
