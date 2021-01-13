@@ -33,6 +33,7 @@ class OrchestratorClient
       else
         f.adapter :net_http_persistent, pool_size: 5 do |http|
           http.idle_timeout = 30
+          http.read_timeout = config['read-timeout'] if config['read-timeout']
         end
       end
     end

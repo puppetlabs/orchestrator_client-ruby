@@ -5,7 +5,8 @@ A simple client for interacting with the Orchestration Services API in Puppet En
 
 ## Compatibility
 
-Currently, this client supports the "V1" endpoints shipped as part of Puppet Enterprise 2016.2.
+Currently, this client supports the "V1" endpoints shipped as part of Puppet Enterprise 2016.2 -
+2019.8.4.
 
 ## Installation
 
@@ -28,6 +29,7 @@ expected to be at `~/.puppetlabs/token` which is the default location used by
 * `User-Agent`- Set `User-Agent` header for HTTP requests. Defaults to `OrchestratorRubyClient/[VERSION]`
 * `job-poll-interval`- Set the default amount of time to sleep when polling in Orchestrator::Job#wait and #each\_event
 * `job-poll-timeout`- Set the default maximum amount of time to wait in Orchestrator::Job#wait
+* `read-timeout` - The time to wait before raising a Timeout exception when making HTTP requests.
 
 ### Example
 
@@ -68,10 +70,6 @@ issues](https://github.com/puppetlabs/orchestrator_api-ruby/issues).
 
 If you are interested in contributing to this project, please see the
 [Contribution Guidelines](CONTRIBUTING.md)
-
-## Authors
-
-Tom Linkin <tom@puppet.com>
 
 ## License
 
