@@ -98,7 +98,8 @@ class OrchestratorClient::Config
     else
       validate_file('token-file', config['token-file'])
       token = File.open(config['token-file']) { |f| f.read.strip }
-      if token != URI.escape(token)
+      # If the token file contains illegal characters
+      if token =~ URI::UNSAFE
         raise OrchestratorClient::ConfigError.new("token-file '#{config['token-file']}' contains illegal characters")
       end
       @config['token'] = token
