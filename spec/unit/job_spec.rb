@@ -5,7 +5,7 @@ describe OrchestratorClient do
   let(:config) do
     {
       'service-url' => 'https://orchestrator.example.lan:8143',
-      'cacert' => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
+      'cacert' => File.join(File.expand_path(File.dirname(__FILE__)), '../fixtures/ca.pem'),
       'token' => 'myfaketoken'
     }
   end

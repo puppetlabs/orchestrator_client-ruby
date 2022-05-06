@@ -3,9 +3,10 @@ require 'spec_helper'
 describe OrchestratorClient::Jobs do
 
   before :each do
+    cert_path = File.join(File.expand_path(File.dirname(__FILE__)), '../fixtures/ca.pem')
     @config = {
       'service-url' => 'https://orchestrator.example.lan:8143',
-      'cacert' => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
+      'cacert' => cert_path,
       'token' => 'myfaketoken'
     }
 
