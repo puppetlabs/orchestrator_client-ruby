@@ -61,7 +61,7 @@ describe OrchestratorClient do
 
     it 'waits for 2 seconds 50 times before timing out' do
       expect(job).to receive(:sleep).with(2).exactly(50).times
-      job.wait
+      expect{job.wait}.to raise_error(OrchestratorClient::JobWaitTimeout)
     end
   end
 end
