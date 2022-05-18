@@ -4,11 +4,11 @@ describe OrchestratorClient::Command do
 
   before :each do
     @url_base = "https://orchestrator.example.lan:8143"
-
+    cert_path = File.join(File.expand_path(File.dirname(__FILE__)), '../fixtures/ca.pem')
     @config = {
-      'service-url'              => @url_base,
-      'cacert' => '/etc/puppetlabs/puppet/ssl/certs/ca.pem',
-      'token'               => 'myfaketoken',
+      'service-url' => @url_base,
+      'cacert' => cert_path,
+      'token' => 'myfaketoken',
     }
 
     @orchestrator = OrchestratorClient.new(@config)

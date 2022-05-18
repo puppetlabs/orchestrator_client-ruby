@@ -93,5 +93,6 @@ class OrchestratorClient::Job
       sleep @poll_interval
       counter += @poll_interval
     end
+    raise OrchestratorClient::JobWaitTimeout
   end
 end

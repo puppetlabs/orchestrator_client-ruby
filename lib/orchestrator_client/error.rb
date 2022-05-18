@@ -57,3 +57,4 @@ class OrchestratorClient::ApiError::QueryError < OrchestratorClient::ApiError; e
 class OrchestratorClient::ApiError::UnknownError < OrchestratorClient::ApiError; end
 class OrchestratorClient::ApiError::UnauthorizedError < OrchestratorClient::ApiError; end
 class OrchestratorClient::BadResponse < RuntimeError; end
+class OrchestratorClient::JobWaitTimeout < RuntimeError; end
