@@ -16,5 +16,5 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_dependency 'faraday', '~> 1.4'
-  s.add_dependency 'net-http-persistent', '~> 3.1'
+  s.add_dependency 'net-http-persistent', '~> 4.0'
 end
