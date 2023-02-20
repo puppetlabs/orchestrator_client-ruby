@@ -40,7 +40,7 @@ require 'orchestrator_client'
 # Requires at least a server name and path to the CA certificate
 
 client = OrchestratorClient.new({
-                                'service-url' => 'https://orchestrator.example.lan:8143/orchestrator/v1',
+                                'service-url' => 'https://orchestrator.example.lan:8143',
                                 'cacert'     => '/path/to/cert'
                               })
 
