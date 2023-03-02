@@ -44,13 +44,13 @@ class OrchestratorClient::Config
   def load_config
     config = defaults
     if @load_files
-      if File.exists?(global_conf) && File.readable?(global_conf)
+      if File.exist?(global_conf) && File.readable?(global_conf)
         config = config.merge(load_file(global_conf))
       end
 
       if @overrides['config-file']
         config = config.merge(load_file(@overrides['config-file']))
-      elsif File.exists?(user_conf) && File.readable?(user_conf)
+      elsif File.exist?(user_conf) && File.readable?(user_conf)
         config = config.merge(load_file(user_conf))
       end
     end
