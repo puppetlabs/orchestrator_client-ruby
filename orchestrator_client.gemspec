@@ -15,6 +15,6 @@ Gem::Specification.new do |s|
   s.license       = "Apache-2.0"
   s.require_paths = ["lib"]
 
-  s.add_dependency 'faraday', '~> 1.4'
-  s.add_dependency 'net-http-persistent', '~> 4.0'
+  s.add_dependency 'faraday', '>= 1.4', '< 3.0'
+  s.add_dependency 'faraday-net_http_persistent', '>= 1.0', '< 3.0'
 end

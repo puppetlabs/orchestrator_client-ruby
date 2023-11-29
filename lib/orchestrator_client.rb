@@ -3,6 +3,7 @@ require 'uri'
 require 'json'
 require 'openssl'
 require 'faraday'
+require 'faraday/net_http_persistent'
 
 class OrchestratorClient
   require 'orchestrator_client/error'
