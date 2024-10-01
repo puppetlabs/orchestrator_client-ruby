@@ -23,7 +23,7 @@ expected to be at `~/.puppetlabs/token` which is the default location used by
 ### initialization Settings
 
 * `service-url` **[required]** - Base URL for the location of the Orchestrator API service
-* `cacert` - Path to the CA certificate file needed to verify the SSL connection to the API.
+* `cacert` - Path to the CA certificate file needed to verify the SSL connection to the API (defaults to `/etc/puppetlabs/puppet/ssl/certs/ca.pem`).
 * `token-file`- Path to a file with the RBAC token in it (defaults to `~/.puppetlabs/token`)
 * `token` - Pass directly the RBAC token, if specified the token will be used instead of a token from file.
 * `User-Agent`- Set `User-Agent` header for HTTP requests. Defaults to `OrchestratorRubyClient/[VERSION]`
