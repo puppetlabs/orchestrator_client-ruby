@@ -28,9 +28,12 @@ class OrchestratorClient
       f.headers['User-Agent'] = config['User-Agent']
       f.ssl['ca_file'] = config['cacert']
       f.ssl['version'] = :TLSv1_2
-      # Do not use net-http-persistent on windows
+      # net-http-persistent does not work reliably on Windows, so fall back
+      # to net-http
       if !!File::ALT_SEPARATOR
-        f.adapter :net_http
+        f.adapter :net_http do |http|
+          http.read_timeout = config['read-timeout'] if config['read-timeout']
+        end
       else
         f.adapter :net_http_persistent, pool_size: 5 do |http|
           http.idle_timeout = 30
